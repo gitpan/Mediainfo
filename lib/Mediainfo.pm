@@ -2,7 +2,7 @@ package Mediainfo;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub new
 {
@@ -128,7 +128,8 @@ Mediainfo - Perl interface to Mediainfo
 =head1 DESCRIPTION
 
 This module is a thin layer above "Mediainfo" which supplies technical and tag information about a video or audio file.
-L<http://mediainfo.sourceforge.net/>.
+
+L<http://mediainfo.sourceforge.net/>
 
 
 =head1 EXAMPLES
@@ -162,14 +163,20 @@ L<http://mediainfo.sourceforge.net/>.
              
 =head1 AUTHOR
 
-Written by ChenGang, yikuyiku.com@gmail.com
+Written by ChenGang
+
+yikuyiku.com@gmail.com
+
+L<http://blog.yikuyiku.com/>
 
 
 =head1 COPYRIGHT
 
 Copyright (c) 2011 ChenGang.
+
 This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
 
 =head1 SEE ALSO
+
 L<Video::Info>, L<Movie::Info>

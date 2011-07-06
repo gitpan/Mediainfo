@@ -3,5 +3,6 @@ Makefile.PL
 MANIFEST
 README
 t/Mediainfo.t
+t/media/foo.mpg
 lib/Mediainfo.pm
 META.yml                                 Module meta-data (added by MakeMaker)
