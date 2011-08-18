@@ -2,7 +2,7 @@ package Mediainfo;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub new
 {
@@ -71,6 +71,7 @@ sub mediainfo
     my $audio_length;
     my $audio_bitrate;
     my $audio_rate;
+    my $audio_language;
     if($audio_info)
     {
         ($audio_codec) = $audio_info =~ /Codec\s*:\s*([\w\_\-\\\/ ]+)\n/;
@@ -81,6 +82,7 @@ sub mediainfo
         ($audio_bitrate) = $audio_info =~ /Bit rate\s*:\s*(\d+)\n/;
         ($audio_rate) = $audio_info =~ /Sampling rate\s*:\s*(\d+)\n/;
         $audio_length = $video_length if ( (!$audio_length or $audio_length <= 0) and $video_length and $audio_info);
+        ($audio_language) = $audio_info =~ /Language\s*:\s*(\w+)\n/;
     }
 
     $self->{'filename'} = $file;
@@ -103,6 +105,7 @@ sub mediainfo
     $self->{'audio_length'} = $audio_length;
     $self->{'audio_bitrate'} = $audio_bitrate;
     $self->{'audio_rate'} = $audio_rate;
+    $self->{'audio_language'} = $audio_language;
     $self->{'have_video'} = ($video_info) ? 1 : 0;
     $self->{'have_audio'} = ($audio_info) ? 1 : 0;
 }
@@ -157,6 +160,7 @@ L<http://mediainfo.sourceforge.net/>
   print $foo_info->{audio_length}, "\n";
   print $foo_info->{audio_bitrate}, "\n";
   print $foo_info->{audio_rate}, "\n";
+  print $foo_info->{audio_language}, "\n";
   print $foo_info->{have_video}, "\n";
   print $foo_info->{have_audio}, "\n";
              
