@@ -2,7 +2,7 @@ package Mediainfo;
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub new
 {
@@ -28,7 +28,8 @@ sub mediainfo
     my ($video_info) = $mediainfo =~ /(^Video[\s\#\d]*\n.*?\n\n)/sm;
     my ($audio_info) = $mediainfo =~ /(^Audio[\s\#\d]*\n.*?\n\n)/sm;
 
-    my ($container) = $genernal_info =~ /Format\s*:\s*([\w\_\-\\\/\. ]+)\n/;
+    my $container;
+    ($container) = $genernal_info =~ /Format\s*:\s*([\w\_\-\\\/\. ]+)\n/;
     $container =~ s/\s//g;
     my ($length) = $genernal_info =~ /Duration\s*:\s*(\d+)\n/;
     my ($bitrate) = $genernal_info =~ /Overall bit rate\s*:\s*(\d+)\n/;
@@ -178,7 +179,8 @@ L<http://blog.yikuyiku.com/>
 
 Copyright (c) 2011 ChenGang.
 
-This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+This library is free software; you can redistribute it 
+and/or modify it under the same terms as Perl itself.
 
 
 =head1 SEE ALSO
