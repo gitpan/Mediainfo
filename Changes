@@ -12,3 +12,6 @@ Revision history for Perl extension Mediainfo.
 
 0.04  Tue Aug 23 17:28:22 2011
     - bugfix
+
+0.05  Thu Aug 25 14:46:15 2011
+    - bugfix

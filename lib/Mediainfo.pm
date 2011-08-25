@@ -2,7 +2,7 @@ package Mediainfo;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub new
 {
@@ -21,7 +21,7 @@ sub mediainfo
 
     my $filesize = -s $file;
     my $mediainfo = `mediainfo -f \"$file\" 2>/dev/null`;
-    $mediainfo =~ s/\r//g;
+    $mediainfo =~ s/\r//g if $mediainfo;
     my ($genernal_info) = $mediainfo =~ /(^General\n.*?\n\n)/sm;
     return undef unless $genernal_info;
 
@@ -30,7 +30,7 @@ sub mediainfo
 
     my $container;
     ($container) = $genernal_info =~ /Format\s*:\s*([\w\_\-\\\/\. ]+)\n/;
-    $container =~ s/\s//g;
+    $container =~ s/\s//g if $container;
     my ($length) = $genernal_info =~ /Duration\s*:\s*(\d+)\n/;
     my ($bitrate) = $genernal_info =~ /Overall bit rate\s*:\s*(\d+)\n/;
 
@@ -48,8 +48,8 @@ sub mediainfo
     {
         ($video_codec) = $video_info =~ /Codec\s*:\s*([\w\_\-\\\/ ]+)\n/;
         ($video_format) = $video_info =~ /Format\s*:\s*([\w\_\-\\\/ ]+)\n/;
-        $video_codec =~ s/\s//g;
-        $video_format =~ s/\s//g;
+        $video_codec =~ s/\s//g if $video_codec;
+        $video_format =~ s/\s//g if $video_format;
         ($video_length) = $video_info =~ /Duration\s*:\s*(\d+)\n/;
         ($video_bitrate) = $video_info =~ /Bit rate\s*:\s*(\d+)\n/;
         ($width) = $video_info =~ /Original width\s*:\s*(\d+)\n/;
@@ -77,8 +77,8 @@ sub mediainfo
     {
         ($audio_codec) = $audio_info =~ /Codec\s*:\s*([\w\_\-\\\/ ]+)\n/;
         ($audio_format) = $audio_info =~ /Format\s*:\s*([\w\_\-\\\/ ]+)\n/;
-        $audio_codec =~ s/\s//g;
-        $audio_format =~ s/\s//g;
+        $audio_codec =~ s/\s//g if $audio_codec;
+        $audio_format =~ s/\s//g if $audio_format;
         ($audio_length) = $audio_info =~ /Duration\s*:\s*(\d+)\n/;
         ($audio_bitrate) = $audio_info =~ /Bit rate\s*:\s*(\d+)\n/;
         ($audio_rate) = $audio_info =~ /Sampling rate\s*:\s*(\d+)\n/;
