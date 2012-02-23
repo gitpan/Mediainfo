@@ -2,7 +2,7 @@ package Mediainfo;
 use strict;
 use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 sub new
 {
@@ -35,7 +35,9 @@ sub mediainfo
     my ($bitrate) = $genernal_info =~ /Overall bit rate\s*:\s*(\d+)\n/;
 
     my $video_codec;
+    my $video_codec_profile;
     my $video_format;
+    my $video_format_profile;
     my $video_length;
     my $video_bitrate;
     my $width;
@@ -44,12 +46,17 @@ sub mediainfo
     my $frame_count;
     my $fps_mode;
     my $dar;
+    my $rotation;
     if($video_info)
     {
         ($video_codec) = $video_info =~ /Codec\s*:\s*([\w\_\-\\\/ ]+)\n/;
         ($video_format) = $video_info =~ /Format\s*:\s*([\w\_\-\\\/ ]+)\n/;
+        ($video_codec_profile) = $video_info =~ /Codec profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n/;
+        ($video_format_profile) = $video_info =~ /Format profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n/;
         $video_codec =~ s/\s//g if $video_codec;
         $video_format =~ s/\s//g if $video_format;
+        $video_codec_profile =~ s/\s//g if $video_codec_profile;
+        $video_format_profile =~ s/\s//g if $video_format_profile;
         ($video_length) = $video_info =~ /Duration\s*:\s*(\d+)\.?\d*\n/;
         ($video_bitrate) = $video_info =~ /Bit rate\s*:\s*(\d+)\n/;
         ($width) = $video_info =~ /Original width\s*:\s*(\d+)\n/;
@@ -65,6 +72,8 @@ sub mediainfo
         $fps = substr($frame_count / $video_length * 1000, 0, 6) if ( (!$fps or $fps <= 0) and $video_length and $frame_count);
         $video_length = substr($frame_count / $fps * 1000, 0, 6) if ($fps and (!$video_length or $video_length <= 0) and $frame_count);
         $video_length = $length if (!$video_length and $length and $video_info);
+        ($rotation) = $video_info =~ /Rotation\s*:\s*([\d\.]+)\n/i;
+        $rotation = 0 unless $rotation;
     }
 
     my $audio_codec;
@@ -93,6 +102,8 @@ sub mediainfo
     $self->{'bitrate'} = $bitrate;
     $self->{'video_codec'} = lc($video_codec);
     $self->{'video_format'} = lc($video_format);
+    $self->{'video_codec_profile'} = lc($video_codec_profile);
+    $self->{'video_format_profile'} = lc($video_format_profile);
     $self->{'video_length'} = $video_length;
     $self->{'video_bitrate'} = $video_bitrate;
     $self->{'width'} = $width;
@@ -101,6 +112,7 @@ sub mediainfo
     $self->{'fps_mode'} = lc($fps_mode);
     $self->{'dar'} = $dar;
     $self->{'frame_count'} = $frame_count;
+    $self->{'rotation'} = $rotation;
     $self->{'audio_codec'} = lc($audio_codec);
     $self->{'audio_format'} = lc($audio_format);
     $self->{'audio_length'} = $audio_length;
@@ -141,6 +153,7 @@ L<http://mediainfo.sourceforge.net/>
   use Mediainfo;
 
   my $foo_info = new Mediainfo("filename" => "/root/foo.mp4");
+
   print $foo_info->{filename}, "\n";
   print $foo_info->{filesize}, "\n";
   print $foo_info->{container}, "\n";
@@ -164,6 +177,11 @@ L<http://mediainfo.sourceforge.net/>
   print $foo_info->{audio_language}, "\n";
   print $foo_info->{have_video}, "\n";
   print $foo_info->{have_audio}, "\n";
+
+  print $foo_info->{rotation}, "\n";
+  print $foo_info->{video_codec_profile}, "\n";
+  print $foo_info->{video_format_profile}, "\n";
+
              
              
 =head1 AUTHOR
