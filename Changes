@@ -26,3 +26,6 @@ Revision history for Perl extension Mediainfo.
 	- add "rotation"
 	- add "video_codec_profile"
 	- add "video_format_profile"
+
+0.09  Mon Jun 11 18:25:15 2012
+	- increase the compatibility of win32

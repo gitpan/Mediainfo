@@ -4,7 +4,7 @@
       "ChenGang <yikuyiku.com@gmail.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.59, CPAN::Meta::Converter version 2.112621",
+   "generated_by" : "ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.112150",
    "license" : [
       "unknown"
    ],
@@ -31,9 +31,11 @@
          }
       },
       "runtime" : {
-         "requires" : {}
+         "requires" : {
+            "IPC::Open3" : 0
+         }
       }
    },
    "release_status" : "stable",
-   "version" : "0.07"
+   "version" : "0.09"
 }

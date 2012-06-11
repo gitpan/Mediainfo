@@ -1,8 +1,9 @@
 package Mediainfo;
 use strict;
 use warnings;
+use IPC::Open3;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub new
 {
@@ -20,7 +21,13 @@ sub mediainfo
     my $file = shift || return undef;
 
     my $filesize = -s $file;
-    my $mediainfo = `mediainfo -f \"$file\" 2>/dev/null`;
+    my ($wtr, $rdr, $err, $mediainfo, $mediainfo_err);
+    use Symbol 'gensym'; $err = gensym;
+    my $pid = open3($wtr, $rdr, $err, "mediainfo -f \"$file\"");
+    close $wtr;
+    while(<$rdr>) {$mediainfo .= $_;}
+    while(<$err>) {$mediainfo_err .= $_;}
+
     $mediainfo =~ s/\r//g if $mediainfo;
     my ($genernal_info) = $mediainfo =~ /(^General\n.*?\n\n)/sm;
     return undef unless $genernal_info;
@@ -95,30 +102,30 @@ sub mediainfo
         ($audio_language) = $audio_info =~ /Language\s*:\s*(\w+)\n/;
     }
 
-    $self->{'filename'} = $file;
-    $self->{'filesize'} = $filesize;
-    $self->{'container'} = lc($container);
-    $self->{'length'} = $length;
-    $self->{'bitrate'} = $bitrate;
-    $self->{'video_codec'} = lc($video_codec);
-    $self->{'video_format'} = lc($video_format);
-    $self->{'video_codec_profile'} = lc($video_codec_profile);
-    $self->{'video_format_profile'} = lc($video_format_profile);
-    $self->{'video_length'} = $video_length;
-    $self->{'video_bitrate'} = $video_bitrate;
-    $self->{'width'} = $width;
-    $self->{'height'} = $height;
-    $self->{'fps'} = $fps;
-    $self->{'fps_mode'} = lc($fps_mode);
-    $self->{'dar'} = $dar;
-    $self->{'frame_count'} = $frame_count;
-    $self->{'rotation'} = $rotation;
-    $self->{'audio_codec'} = lc($audio_codec);
-    $self->{'audio_format'} = lc($audio_format);
-    $self->{'audio_length'} = $audio_length;
-    $self->{'audio_bitrate'} = $audio_bitrate;
-    $self->{'audio_rate'} = $audio_rate;
-    $self->{'audio_language'} = $audio_language;
+    $self->{'filename'} = $file if $file;
+    $self->{'filesize'} = $filesize if $filesize;
+    $self->{'container'} = lc($container) if $container;
+    $self->{'length'} = $length if $length;
+    $self->{'bitrate'} = $bitrate if $bitrate;
+    $self->{'video_codec'} = lc($video_codec) if $video_codec;
+    $self->{'video_format'} = lc($video_format) if $video_format;
+    $self->{'video_codec_profile'} = lc($video_codec_profile) if $video_codec_profile;
+    $self->{'video_format_profile'} = lc($video_format_profile) if $video_format_profile;
+    $self->{'video_length'} = $video_length if $video_length;
+    $self->{'video_bitrate'} = $video_bitrate if $video_bitrate;
+    $self->{'width'} = $width if $width;
+    $self->{'height'} = $height if $height;
+    $self->{'fps'} = $fps if $fps;
+    $self->{'fps_mode'} = lc($fps_mode) if $fps_mode;
+    $self->{'dar'} = $dar if $dar;
+    $self->{'frame_count'} = $frame_count if $frame_count;
+    $self->{'rotation'} = $rotation if $rotation;
+    $self->{'audio_codec'} = lc($audio_codec) if $audio_codec;
+    $self->{'audio_format'} = lc($audio_format) if $audio_format;
+    $self->{'audio_length'} = $audio_length if $audio_length;
+    $self->{'audio_bitrate'} = $audio_bitrate if $audio_bitrate;
+    $self->{'audio_rate'} = $audio_rate if $audio_rate;
+    $self->{'audio_language'} = $audio_language if $audio_language;
     $self->{'have_video'} = ($video_info) ? 1 : 0;
     $self->{'have_audio'} = ($audio_info) ? 1 : 0;
 }
