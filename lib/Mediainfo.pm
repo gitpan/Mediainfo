@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use IPC::Open3;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub new
 {
@@ -27,6 +27,7 @@ sub mediainfo
     close $wtr;
     while(<$rdr>) {$mediainfo .= $_;}
     while(<$err>) {$mediainfo_err .= $_;}
+	waitpid( $pid, 0);
 
     $mediainfo =~ s/\r//g if $mediainfo;
     my ($genernal_info) = $mediainfo =~ /(^General\n.*?\n\n)/sm;
@@ -36,10 +37,20 @@ sub mediainfo
     my ($audio_info) = $mediainfo =~ /(^Audio[\s\#\d]*\n.*?\n\n)/sm;
 
     my $container;
+    my $length;
+    my $bitrate;
+    my $title;
+    my $album;
+    my $track_name;
+    my $performer;
     ($container) = $genernal_info =~ /Format\s*:\s*([\w\_\-\\\/\. ]+)\n/;
     $container =~ s/\s//g if $container;
-    my ($length) = $genernal_info =~ /Duration\s*:\s*(\d+)\.?\d*\n/;
-    my ($bitrate) = $genernal_info =~ /Overall bit rate\s*:\s*(\d+)\n/;
+    ($length) = $genernal_info =~ /Duration\s*:\s*(\d+)\.?\d*\n/;
+    ($bitrate) = $genernal_info =~ /Overall bit rate\s*:\s*(\d+)\n/;
+    ($title) = $genernal_info =~ /Title\s*:\s*(.+)\n/;
+    ($album) = $genernal_info =~ /Album\s*:\s*(.+)\n/;
+    ($track_name) = $genernal_info =~ /Track name\s*:\s*(.+)\n/;
+    ($performer) = $genernal_info =~ /Performer\s*:\s*(.+)\n/;
 
     my $video_codec;
     my $video_codec_profile;
@@ -107,6 +118,10 @@ sub mediainfo
     $self->{'container'} = lc($container) if $container;
     $self->{'length'} = $length if $length;
     $self->{'bitrate'} = $bitrate if $bitrate;
+    $self->{'title'} = $title if $title;
+    $self->{'album'} = $album if $album;
+    $self->{'track_name'} = $track_name if $track_name;
+    $self->{'performer'} = $performer if $performer;
     $self->{'video_codec'} = lc($video_codec) if $video_codec;
     $self->{'video_format'} = lc($video_format) if $video_format;
     $self->{'video_codec_profile'} = lc($video_codec_profile) if $video_codec_profile;
@@ -166,6 +181,10 @@ L<http://mediainfo.sourceforge.net/>
   print $foo_info->{container}, "\n";
   print $foo_info->{length}, "\n";
   print $foo_info->{bitrate}, "\n";
+  print $foo_info->{title}, "\n";
+  print $foo_info->{album}, "\n";
+  print $foo_info->{track_name}, "\n";
+  print $foo_info->{performer}, "\n";
   print $foo_info->{video_codec}, "\n";
   print $foo_info->{video_format}, "\n";
   print $foo_info->{video_length}, "\n";

@@ -29,3 +29,10 @@ Revision history for Perl extension Mediainfo.
 
 0.09  Mon Jun 11 18:25:15 2012
 	- increase the compatibility of win32
+
+0.10  Tue Aug 28 22:18:22 2012
+	- fix the wrong way open3 is being used.
+	- add "title"
+	- add "album"
+	- add "track_name"
+	- add "performer"
