@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use IPC::Open3;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub new
 {
@@ -20,10 +20,30 @@ sub mediainfo
     my $self = shift;
     my $file = shift || return undef;
 
+	my @PATH = split /:/, $ENV{PATH};
+	push @PATH, "./";
+	push @PATH, "/bin";
+	push @PATH, "/sbin";
+	push @PATH, "/usr/bin";
+	push @PATH, "/usr/sbin";
+	push @PATH, "/usr/local/bin";
+	push @PATH, "/usr/local/sbin";
+	my $mediainfo_exec;
+
+	foreach (@PATH)
+	{
+		my $executable = $_ . '/mediainfo';
+		if (-s $executable)
+		{
+			$mediainfo_exec = $executable;
+			last;
+		}
+	}
+
     my $filesize = -s $file;
     my ($wtr, $rdr, $err, $mediainfo, $mediainfo_err);
     use Symbol 'gensym'; $err = gensym;
-    my $pid = open3($wtr, $rdr, $err, "mediainfo -f \"$file\"");
+    my $pid = open3($wtr, $rdr, $err, "$mediainfo_exec -f \"$file\"");
     close $wtr;
     while(<$rdr>) {$mediainfo .= $_;}
     while(<$err>) {$mediainfo_err .= $_;}

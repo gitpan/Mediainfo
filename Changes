@@ -36,3 +36,7 @@ Revision history for Perl extension Mediainfo.
 	- add "album"
 	- add "track_name"
 	- add "performer"
+
+0.11  Wed May 28 23:21:49 2014
+	- auto find mediainfo_exec
+	- fix bug in crontab
